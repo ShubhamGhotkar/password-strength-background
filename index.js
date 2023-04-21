@@ -3,44 +3,69 @@ const backContainer = document.querySelector(".container");
 
 const passInput = document.querySelector(".password--input");
 
-passInput.addEventListener("input", (event) => {
-  let inputString = event.target.value;
-  //   calculate length of password
-  let passLength = inputString.length;
+let validateArray = [
+  "@",
+  "#",
+  "$",
+  "%",
+  "^",
+  "&",
+  "*",
+  "(",
+  ")",
+  "{",
+  "}",
+  "[",
+  "]",
+];
 
-  //   adjust blur & checking value if length >7
-  let blurValue = 14 - passLength * 2 < 0 ? 0 : 14 - passLength * 2;
-  backContainer.style.filter = `blur(${blurValue}px)`;
+passInput.addEventListener("input", (event) => {
+  let defaultBlur = 15;
+  let inputString = event.target.value;
+
+  let backBlurValue = checkInputForPassword(inputString);
+
+  backContainer.style.filter = `blur(${defaultBlur - backBlurValue}px)`;
 });
 
-
 //  FOR VALIDATION
+function checkInputForPassword(str) {
+  let blurValue = 0;
+  let inputStringArray = [...str];
 
-// let blurValue = 14;
-// function checkInputForPassword(str) {
-//   let set = new Set([str.slice()]);
-//   // check length
-//   (function () {
-//     blurValue = str.length >= 7 ? blurValue - 2 : blurValue;
-//   })();
+  // check length
+  if (str.length >= 7 && str.length <= 20) blurValue += 3;
 
-//   // check special character
-//   (function () {
-//     if (set.has("@") || set.has("$") || set.has("#") || set.has("*")) {
-//       blurValue -= 2;
-//     }
-//   })();
+  // check special character
 
-//   // uppercase character
+  let isSpecialChar = function (str) {
+    let strArray = [...str];
+    let check = strArray.some((itm) => validateArray.includes(itm));
+    return check;
+  };
 
-//   let isCapitalLettel = function (str) {
-//     return /[A-Z]/.test(str);
-//   };
+  if (isSpecialChar(str)) blurValue += 3;
 
-//   blurValue = isCapitalLettel(str) ? (blurValue -= 2) : blurValue;
-//   // lowercase character
+  // uppercase character
 
-//   // check number
+  let isCapitalLettel = function (str) {
+    return /[A-Z]/.test(str);
+  };
+  if (isCapitalLettel(str)) blurValue += 3;
 
-//   console.log(blurValue);
-// }
+  // lowercase character
+
+  let isSmallLettel = function (str) {
+    return /[a-z]/.test(str);
+  };
+  if (isSmallLettel(str)) blurValue += 3;
+
+  // check number
+  let isNumber = function (str) {
+    return /[0-9]/.test(str);
+  };
+
+  if (isNumber(str)) blurValue += 3;
+
+  return blurValue;
+}
