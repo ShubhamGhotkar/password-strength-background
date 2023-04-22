@@ -31,7 +31,6 @@ passInput.addEventListener("input", (event) => {
 //  FOR VALIDATION
 function checkInputForPassword(str) {
   let blurValue = 0;
-  let inputStringArray = [...str];
 
   // check length
   if (str.length >= 7 && str.length <= 20) blurValue += 3;
@@ -47,25 +46,18 @@ function checkInputForPassword(str) {
   if (isSpecialChar(str)) blurValue += 3;
 
   // uppercase character
-
-  let isCapitalLettel = function (str) {
-    return /[A-Z]/.test(str);
-  };
-  if (isCapitalLettel(str)) blurValue += 3;
+  if (validation(str, /[A-Z]/)) blurValue += 3;
 
   // lowercase character
-
-  let isSmallLettel = function (str) {
-    return /[a-z]/.test(str);
-  };
-  if (isSmallLettel(str)) blurValue += 3;
+  if (validation(str, /[a-z]/)) blurValue += 3;
 
   // check number
-  let isNumber = function (str) {
-    return /[0-9]/.test(str);
-  };
+  if (validation(str, /[0-9]/)) blurValue += 3;
 
-  if (isNumber(str)) blurValue += 3;
-
+  console.log(blurValue);
   return blurValue;
+}
+
+function validation(str, validate) {
+  return validate.test(str);
 }
